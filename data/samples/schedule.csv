@@ -1,0 +1,7 @@
+activity_id,name,planned_progress,actual_progress,predecessor
+A100,Site preparation,100,100,
+A101,Block A excavation,100,100,A100
+A102,Block A foundation concrete,80,40,A101
+A103,Ground floor columns,35,20,A102
+A104,Ground floor slab,10,0,A103
+A105,Electrical rough-in,0,0,A104
