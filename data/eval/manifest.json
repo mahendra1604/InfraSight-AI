@@ -1,0 +1,305 @@
+{
+  "schedule": "data/samples/schedule_extended.csv",
+  "documents": [
+    {
+      "file": "eval_01_structured.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 60,
+          "reporting_date": "2026-10-29"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 20,
+          "reporting_date": "2026-10-29"
+        },
+        {
+          "activity_id": "A104",
+          "progress": 0,
+          "reporting_date": "2026-10-29"
+        }
+      ]
+    },
+    {
+      "file": "eval_02_narrative.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 65,
+          "reporting_date": "2026-10-30"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 25,
+          "reporting_date": "2026-10-30"
+        },
+        {
+          "activity_id": "A109",
+          "progress": 78,
+          "reporting_date": "2026-10-30"
+        }
+      ]
+    },
+    {
+      "file": "eval_03_table.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A111",
+          "progress": 55,
+          "reporting_date": "2026-10-31"
+        },
+        {
+          "activity_id": "A112",
+          "progress": 40,
+          "reporting_date": "2026-10-31"
+        },
+        {
+          "activity_id": "A109",
+          "progress": 80,
+          "reporting_date": "2026-10-31"
+        }
+      ]
+    },
+    {
+      "file": "eval_04_no_ids.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A104",
+          "progress": 5,
+          "reporting_date": "2026-11-01"
+        },
+        {
+          "activity_id": "A112",
+          "progress": 45,
+          "reporting_date": "2026-11-01"
+        }
+      ]
+    },
+    {
+      "file": "eval_05_planned_actual.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 70,
+          "reporting_date": "2026-11-07"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 30,
+          "reporting_date": "2026-11-07"
+        }
+      ]
+    },
+    {
+      "file": "eval_06_issues_only.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A111",
+          "progress": 60,
+          "reporting_date": "2026-11-02"
+        }
+      ]
+    },
+    {
+      "file": "eval_07_ocr_noise.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 75,
+          "reporting_date": "2026-11-05"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 35,
+          "reporting_date": "2026-11-05"
+        }
+      ]
+    },
+    {
+      "file": "eval_08_long_multi.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 80,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 40,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A104",
+          "progress": 10,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A109",
+          "progress": 90,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A111",
+          "progress": 65,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A112",
+          "progress": 50,
+          "reporting_date": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "file": "eval_09_email.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A103",
+          "progress": 45,
+          "reporting_date": "2026-11-09"
+        },
+        {
+          "activity_id": "A104",
+          "progress": 12,
+          "reporting_date": "2026-11-09"
+        }
+      ]
+    },
+    {
+      "file": "eval_10_distractors.txt",
+      "kind": "text",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 85,
+          "reporting_date": "2026-11-10"
+        }
+      ]
+    },
+    {
+      "file": "eval_11_narrative.pdf",
+      "kind": "pdf",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 65,
+          "reporting_date": "2026-10-30"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 25,
+          "reporting_date": "2026-10-30"
+        },
+        {
+          "activity_id": "A109",
+          "progress": 78,
+          "reporting_date": "2026-10-30"
+        }
+      ]
+    },
+    {
+      "file": "eval_12_monthly.pdf",
+      "kind": "pdf",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 80,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 40,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A104",
+          "progress": 10,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A109",
+          "progress": 90,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A111",
+          "progress": 65,
+          "reporting_date": "2026-11-08"
+        },
+        {
+          "activity_id": "A112",
+          "progress": 50,
+          "reporting_date": "2026-11-08"
+        }
+      ]
+    },
+    {
+      "file": "eval_13_scan.png",
+      "kind": "image",
+      "expected": [
+        {
+          "activity_id": "A102",
+          "progress": 60,
+          "reporting_date": "2026-10-29"
+        },
+        {
+          "activity_id": "A103",
+          "progress": 20,
+          "reporting_date": "2026-10-29"
+        },
+        {
+          "activity_id": "A104",
+          "progress": 0,
+          "reporting_date": "2026-10-29"
+        }
+      ]
+    },
+    {
+      "file": "eval_14_phone_photo.jpg",
+      "kind": "image",
+      "expected": [
+        {
+          "activity_id": "A111",
+          "progress": 55,
+          "reporting_date": "2026-10-31"
+        },
+        {
+          "activity_id": "A112",
+          "progress": 40,
+          "reporting_date": "2026-10-31"
+        },
+        {
+          "activity_id": "A109",
+          "progress": 80,
+          "reporting_date": "2026-10-31"
+        }
+      ]
+    },
+    {
+      "file": "eval_15_email_scan.png",
+      "kind": "image",
+      "expected": [
+        {
+          "activity_id": "A103",
+          "progress": 45,
+          "reporting_date": "2026-11-09"
+        },
+        {
+          "activity_id": "A104",
+          "progress": 12,
+          "reporting_date": "2026-11-09"
+        }
+      ]
+    }
+  ]
+}

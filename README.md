@@ -1,67 +1,111 @@
 # InfraSight AI
 
-A shared starter for infrastructure progress monitoring, built for three teammates. React provides the dashboard; FastAPI and SQLAlchemy provide the API and persistent storage.
+Infrastructure project progress monitoring: daily site reports (text, Word, PDF, scans, photos) are read by a **local LLM**, matched to schedule activities with **Sentence Transformers**, verified by a project manager, and turned into progress, **critical-path / downstream-impact analysis** and **XGBoost delay-risk predictions**. Everything runs on a laptop; no data leaves the machine.
 
-## Run locally on Windows
+See `InfraSight AI.docx` for the project report, `PROJECT_ANALYSIS_AND_LLM_PLAN.md` for the LLM diagnosis and plan, and `docs/` for architecture, API contracts and the six-member team plan.
 
-Requirements: Python 3.13 and Node.js 24. Run the following from the project folder in PowerShell.
+## Setup (Windows, PowerShell, from the project folder)
+
+Requirements: Python 3.13, Node.js 24, [Ollama](https://ollama.com/download/windows). Optional: Java 8+ for the Spark job.
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r backend/requirements.txt
+
+# Local models (instruct = no hidden "thinking"; ~5.8 GB total)
+ollama pull qwen3:4b-instruct-2507-q4_K_M
+ollama pull qwen3-vl:4b-instruct
+```
+
+Recommended Ollama settings for a CPU-only laptop. Set them once, then quit and restart Ollama from the tray:
+
+```powershell
+setx OLLAMA_CONTEXT_LENGTH 8192; setx OLLAMA_KEEP_ALIVE 30m; setx OLLAMA_MAX_LOADED_MODELS 1; setx OLLAMA_FLASH_ATTENTION 1
+```
+
+Start the API and the web app in two terminals:
+
+```powershell
 cd backend
 ..\.venv\Scripts\python.exe -m uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
-
-In a second terminal, from the project folder:
-
 ```powershell
 cd frontend
 npm.cmd ci
 npm.cmd run dev
 ```
 
-Open http://localhost:5173. API documentation: http://127.0.0.1:8000/docs. On macOS/Linux use `.venv/bin/python` instead of `.venv\Scripts\python.exe` and `npm` instead of `npm.cmd`.
+Open http://localhost:5173 and sign in with a demo account shown on the login page: `admin/admin123`, `manager/manager123`, `engineer/engineer123` or `viewer/viewer123`. API docs: http://127.0.0.1:8000/docs. Copy `.env.example` to `.env` to change settings (loaded automatically). `AUTH_ENABLED=false` skips login.
 
-SQLite is created at `backend/infrasight.db` on first startup when following these commands. Sample data is seeded only into an empty database. Changes persist across restarts. `.env.example` documents available settings; this starter reads process environment variables, it does not automatically load `.env`.
-
-## What works
-
-- Six synthetic activities with a fixed 1 October 2026 baseline.
-- Planned/actual dashboard and activity register.
-- Manual report creation and approval/rejection queue.
-- Approved cumulative progress updates and persisted audit entries.
-- Rejection leaves progress unchanged. Duplicate decisions and older approved-data overwrites are blocked.
-- CSV schedule validation including duplicate IDs, missing predecessors, invalid percentages, and dependency cycles. Validation does not import or replace the baseline.
-- Readable dependency sequence, API documentation, and tests.
+The first start migrates an existing `backend/infrasight.db` in place (new columns and tables, existing data kept). It also downloads the 90 MB matching model on the first analysis and trains the delay model on the first risk request (a few seconds).
 
 ## Try the complete flow
 
-1. Observe foundation concrete at 40% actual versus 80% planned.
-2. Open Report review and approve the seeded 60% report.
-3. Return to Overview: foundation concrete is 60%, variance is -20 percentage points.
-4. Open Audit trail to see the recorded decision.
-5. Add another manual report or validate `data/samples/schedule.csv`.
+1. **Analyse reports** → upload `data/samples/qwen_test_report.txt` → watch *Reading → Extracting → Matching* (about 50–70 s on CPU) → 3 suggestions are created.
+2. Upload the same report as an image (any screenshot of it) → OCR reads it in ~3 s; the values are recognised as duplicates.
+3. **Report review** → approve A102 at 60 % (or correct the activity/progress first). The audit trail records the reviewer, model, match method and score.
+4. **Dependencies** → critical path and float; simulate a 7-day slip of A103 and see the project finish move.
+5. **Delay risk** → probability of delay, expected slip and main factors per activity; download the Excel project report.
+6. **Schedule** → validate and import `data/samples/schedule_extended.csv` (17 activities, multiple predecessors, quantities).
+7. **Site plans** → upload `data/samples/site_plan.png` → the model reads the printed dimensions; code builds the quantity take-off (drains 450 m, road 300 m, Block A 600 m² …). Apply a quantity to an activity, download the draft schedule, and import it with *Keep existing activities* ticked.
+8. **Report by quantity** → in *Report review → Add a manual report* choose *By quantity* (e.g. 252 m³ of 420 m³ → 60 %), or upload a diary saying "laid 45 m of drain today": the system converts it to cumulative progress.
 
-## Development scope
+## What is implemented (report modules)
 
-This is a local single-project demo. No authentication, file persistence, trained AI, OCR, automatic matching, delay predictions, critical-path calculation, Spark jobs, production migration system, or report export is implemented yet. Do not expose it publicly or use confidential data. Report review identifies a local demo reviewer, not a signed-in user. Multi-user simultaneous decision locking and baseline/date versioning must be implemented before shared production use.
+| Module (report) | Implementation | Status |
+|---|---|---|
+| User management | JWT login, 4 roles, reviewer identity in the audit trail | ✅ |
+| Schedule management | CSV/XLSX import, P6/MS Project header mapping, multiple predecessors, baseline versions | ✅ (single project) |
+| Report management | Upload txt/docx/pdf/png/jpg/webp/tiff/bmp, stored by SHA-256, background jobs, duplicate detection | ✅ |
+| OCR processing | RapidOCR (PaddleOCR models, ONNX Runtime) for scans and scanned PDF pages | ✅ |
+| NLP processing | Ollama `qwen3:4b-instruct` (text/OCR) and `qwen3-vl:4b-instruct` (photos), JSON-schema output, validation, retry | ✅ |
+| Activity matching | ID match → Sentence Transformers (all-MiniLM-L6-v2) top-3, validation decision | ✅ |
+| Progress monitoring | Planned vs actual, variance, human-approved cumulative progress; progress by % **or by quantity** (m, m², m³, nos … with unit conversion) | ✅ |
+| Site plans (drawings) | Vision + OCR reads printed dimensions; code computes the quantity take-off; apply quantities to activities; draft schedule CSV | ✅ |
+| Dependency analysis | NetworkX DAG, CPM (ES/EF/LS/LF, float), critical path, bottlenecks, downstream impact simulation | ✅ (FS links) |
+| Delay prediction / Risk | XGBoost classifier + regressor, per-prediction factors, risk score | ✅ (synthetic training data) |
+| Dashboard | React app (8 screens) · Power BI via `v_activity_progress`, `v_report_pipeline`, `v_risk` views and CSV exports | ✅ / Power BI file to build |
+| Audit trail | Reviewer, time, model, match method/score, corrections, notes | ✅ |
+| Big data | Spark SQL batch KPI job with throughput test (`pipelines/`) | ✅ (local mode) |
+| Report generation | Excel project report (summary, activities, risk, reports, audit) | ✅ |
 
-Progress is cumulative (0–100). Overall progress is an unweighted mean, not earned value. Planned values are fixed fixture values rather than a time-based schedule calculation. Dates are ISO dates. The starter permits one predecessor per activity and does not model dependency type or lag. Reject and resubmit incorrect manual entries; editing reviewed reports is not supported yet.
+## Measured results
+
+All measured on a CPU-only laptop (Ryzen 5 5600H, 16 GB RAM):
+
+- **LLM before vs. after:** 216.8 s with empty output → 35–55 s per typical report with all fields correct (`PROJECT_ANALYSIS_AND_LLM_PLAN.md`).
+- **Golden set (15 docs, 37 values):** v1 precision/recall 0.881, progress accuracy 0.919. v2 after fixes: 1.0 on all metrics, p50 ≈ 35–49 s (`ml/EVAL_RESULTS.md`). v2 is optimistic because the fixes were tuned on the same set; use a fresh held-out set for the final report.
+- **Delay model (synthetic hold-out):** ROC-AUC 0.946, F1 0.88, MAE 3.2 days.
+- **Spark SQL:** 2 million report rows aggregated in 15.9 s (≈ 126 k rows/s, local mode).
+- **Site plan take-off** (`data/samples/site_plan.png`, vision model, 3–5 min on CPU): printed labels read correctly in every run; 6/6 totals in 2 of 4 runs. The weak point is assigning an unnamed dimension ("180 m") to the right element, so quantities are always confirmed (and editable) by a manager before they are applied.
 
 ## Tests
 
 ```powershell
 cd backend
-..\.venv\Scripts\python.exe -m pytest tests -q
-cd ../frontend
+..\.venv\Scripts\python.exe -m pytest            # 108 unit + API tests (LLM mocked), ~40 s
+..\.venv\Scripts\python.exe -m pytest -m live    # 3 tests with the real Ollama models, ~8 min
+cd ..\frontend
 npm.cmd run build
 ```
 
-## Optional PostgreSQL
+Evaluation and training: see `ml/README.md`. Spark: see `pipelines/README.md`.
 
-With Docker installed, run `docker compose up --build` from the root, then run the frontend normally. This starts PostgreSQL and the API instead of the local SQLite API. Development credentials are in the compose file; ports are bound to localhost. Do not run both API alternatives on port 8000. Docker execution must be validated on a machine with Docker installed.
+## Troubleshooting
 
-## Work together
+| Symptom | Cause / fix |
+|---|---|
+| "Ollama is not running" | Start the Ollama app; check `http://127.0.0.1:11434/api/version`. |
+| "Model … is not installed" | Run the `ollama pull` command shown in the message. |
+| "did not finish within 600 s" | The model is running but too slow: close other apps (needs ~5 GB free RAM), use *Automatic* mode, raise `OLLAMA_TIMEOUT`. |
+| Empty answer / "only hidden reasoning" | A thinking model is configured. Use the `-instruct` tags above (`qwen3-vl:8b` is a thinking model). |
+| "output was cut off" | Very long page: split the document or raise `OLLAMA_NUM_PREDICT`. |
+| pytest `PermissionError` on Temp | Already handled by `backend/pytest.ini` (`--basetemp=.pytest-tmp`). |
 
-Read `docs/team-plan.md`, `docs/data-contracts.md`, and `docs/architecture.md`. Agree on shared interfaces before changing them, review changes together, and keep the application runnable on all three machines.
+## Docker (optional)
+
+`docker compose up --build` starts PostgreSQL and the API. Ollama keeps running on the host and is reached at `host.docker.internal:11434`. Run the frontend normally. Do not run both API alternatives on port 8000.
+
+## Limits
+
+One demo project; finish-to-start links without lag; planned percentages are baseline fixtures; the delay model is trained on a documented synthetic dataset until real project history is available. AI output is decision support and always requires review.

@@ -1,0 +1,2 @@
+# PySpark 3.5 runs on Java 8/11/17. PySpark 4.x requires Java 17+.
+pyspark==3.5.9

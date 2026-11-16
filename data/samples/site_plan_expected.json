@@ -1,0 +1,51 @@
+{
+  "totals": [
+    {
+      "name": "Plot boundary",
+      "category": "boundary",
+      "measure": "area",
+      "total": 9600,
+      "unit": "m2"
+    },
+    {
+      "name": "Block A",
+      "category": "building",
+      "measure": "area",
+      "total": 600,
+      "unit": "m2"
+    },
+    {
+      "name": "Block B",
+      "category": "building",
+      "measure": "area",
+      "total": 500,
+      "unit": "m2"
+    },
+    {
+      "name": "Parking",
+      "category": "parking",
+      "measure": "area",
+      "total": 600,
+      "unit": "m2"
+    },
+    {
+      "name": "Access road",
+      "category": "road",
+      "measure": "length",
+      "total": 300,
+      "unit": "m"
+    },
+    {
+      "name": "Drain",
+      "category": "drainage",
+      "measure": "length",
+      "total": 450,
+      "unit": "m"
+    }
+  ],
+  "drawing": {
+    "title": "SITE LAYOUT PLAN",
+    "scale": "1:500",
+    "date": "15/09/2026"
+  }
+}

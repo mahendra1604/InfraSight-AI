@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+backend/.venv/
+
+# Tests and local scratch
+backend/.pytest-tmp/
+backend/.test-tmp/
+backend/.pytest-*/
+.pytest_cache/
+
+# Local data, secrets, uploads
+.env
+backend/.secret_key
+backend/uploads/
+backend/infrasight.db
+*.db-journal
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+
+# Generated outputs
+outputs/
+ml/models/
+ml/data/
+
+# Kept local on purpose (the repository is public)
+/InfraSight AI.docx

@@ -1,0 +1,18 @@
+activity_id,name,planned_progress,actual_progress,predecessor,planned_start,planned_finish,duration_days,wbs,total_quantity,unit
+A100,Site preparation,100,100,,2026-08-01,2026-08-20,20,1.1,9600,m2
+A101,Block A excavation,100,100,A100,2026-08-21,2026-09-11,22,1.2.1,1800,m3
+A102,Block A foundation concrete,80,40,A101,2026-09-12,2026-10-06,25,1.2.2,420,m3
+A103,Ground floor columns,35,20,A102,2026-09-22,2026-10-17,26,1.3.1,48,nos
+A104,Ground floor slab,10,0,A103,2026-09-28,2026-10-27,30,1.3.2,600,m2
+A105,Electrical rough-in,0,0,A104,2026-10-15,2026-11-10,27,1.5.1,,
+A106,Plumbing rough-in,0,0,A104,2026-10-20,2026-11-12,24,1.5.2,,
+A107,First floor columns,0,0,A104,2026-10-28,2026-11-20,24,1.4.1,48,nos
+A108,First floor slab,0,0,A107,2026-11-21,2026-12-15,25,1.4.2,600,m2
+A109,Block B excavation,87,70,A100,2026-09-05,2026-10-05,31,2.1,1500,m3
+A110,Block B foundation concrete,0,0,A109,2026-10-06,2026-10-31,26,2.2,350,m3
+A111,Drainage and stormwater lines,42,45,A100,2026-09-15,2026-10-24,40,3.1,450,m
+A112,Site access road,52,30,A100,2026-09-10,2026-10-21,42,3.2,300,m
+A113,Ground floor masonry walls,0,0,A104,2026-10-28,2026-11-25,29,1.6,380,m2
+A114,Roof waterproofing,0,0,A108,2026-12-16,2026-12-31,16,1.7,600,m2
+A115,Finishing works,0,0,A105;A106;A113,2026-11-26,2026-12-31,36,1.8,,
+A116,Handover inspection,0,0,A114;A115;A110;A111;A112,2027-01-01,2027-01-10,10,4.1,,

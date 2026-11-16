@@ -1,0 +1,321 @@
+{
+  "run_at": "2026-11-16T15:20:12",
+  "mode": "auto",
+  "text_model": "qwen3:4b-instruct-2507-q4_K_M",
+  "vision_model": "qwen3-vl:4b-instruct",
+  "matcher": "sentence-transformers",
+  "summary": {
+    "documents": 15,
+    "errors": 0,
+    "valid_output_rate": 1.0,
+    "precision": 0.881,
+    "recall": 0.881,
+    "progress_accuracy": 0.919,
+    "date_accuracy": 0.946,
+    "latency_by_kind": {
+      "image": {
+        "p50_s": 39.6,
+        "p95_s": 40.9,
+        "n": 3
+      },
+      "pdf": {
+        "p50_s": 44.8,
+        "p95_s": 73.1,
+        "n": 2
+      },
+      "text": {
+        "p50_s": 36.6,
+        "p95_s": 83.4,
+        "n": 10
+      }
+    }
+  },
+  "documents": [
+    {
+      "file": "eval_01_structured.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 54.1,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_02_narrative.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 54.7,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 2,
+      "false_positive": [
+        "A101"
+      ],
+      "missed": [
+        "A109"
+      ],
+      "progress_correct": 0,
+      "date_correct": 2,
+      "wrong_values": {
+        "A102": {
+          "got": 25.0,
+          "want": 65,
+          "date": "2026-10-30"
+        },
+        "A103": {
+          "got": 78.0,
+          "want": 25,
+          "date": "2026-10-30"
+        }
+      }
+    },
+    {
+      "file": "eval_03_table.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 47.1,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_04_no_ids.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 34.0,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_05_planned_actual.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 35.7,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 1,
+      "false_positive": [
+        "A101"
+      ],
+      "missed": [
+        "A103"
+      ],
+      "progress_correct": 0,
+      "date_correct": 1,
+      "wrong_values": {
+        "A102": {
+          "got": 30.0,
+          "want": 70,
+          "date": "2026-11-07"
+        }
+      }
+    },
+    {
+      "file": "eval_06_issues_only.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 36.6,
+      "error": null,
+      "expected": 1,
+      "predicted": 1,
+      "true_positive": 1,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 1,
+      "date_correct": 1,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_07_ocr_noise.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 34.7,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_08_long_multi.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 83.4,
+      "error": null,
+      "expected": 6,
+      "predicted": 6,
+      "true_positive": 6,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 6,
+      "date_correct": 6,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_09_email.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 31.1,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 0,
+      "false_positive": [
+        "A101",
+        "A102"
+      ],
+      "missed": [
+        "A103",
+        "A104"
+      ],
+      "progress_correct": 0,
+      "date_correct": 0,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_10_distractors.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 37.8,
+      "error": null,
+      "expected": 1,
+      "predicted": 1,
+      "true_positive": 1,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 1,
+      "date_correct": 1,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_11_narrative.pdf",
+      "kind": "pdf",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 44.8,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 2,
+      "false_positive": [
+        "A110"
+      ],
+      "missed": [
+        "A102"
+      ],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_12_monthly.pdf",
+      "kind": "pdf",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 73.1,
+      "error": null,
+      "expected": 6,
+      "predicted": 6,
+      "true_positive": 6,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 6,
+      "date_correct": 6,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_13_scan.png",
+      "kind": "image",
+      "method": "ocr",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 40.9,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_14_phone_photo.jpg",
+      "kind": "image",
+      "method": "ocr",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 39.6,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {}
+    },
+    {
+      "file": "eval_15_email_scan.png",
+      "kind": "image",
+      "method": "ocr",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 25.8,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 0,
+      "wrong_values": {
+        "A103": {
+          "got": 45.0,
+          "want": 45,
+          "date": "2026-09-11"
+        },
+        "A104": {
+          "got": 12.0,
+          "want": 12,
+          "date": "2026-09-11"
+        }
+      }
+    }
+  ]
+}

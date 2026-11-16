@@ -1,0 +1,762 @@
+{
+  "run_at": "2026-11-16T15:34:12",
+  "mode": "auto",
+  "text_model": "qwen3:4b-instruct-2507-q4_K_M",
+  "vision_model": "qwen3-vl:4b-instruct",
+  "matcher": "sentence-transformers",
+  "summary": {
+    "documents": 15,
+    "errors": 0,
+    "valid_output_rate": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "progress_accuracy": 1.0,
+    "date_accuracy": 1.0,
+    "latency_by_kind": {
+      "image": {
+        "p50_s": 48.8,
+        "p95_s": 49.4,
+        "n": 3
+      },
+      "pdf": {
+        "p50_s": 42.6,
+        "p95_s": 71.3,
+        "n": 2
+      },
+      "text": {
+        "p50_s": 35.3,
+        "p95_s": 76.4,
+        "n": 10
+      }
+    }
+  },
+  "documents": [
+    {
+      "file": "eval_01_structured.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 54.2,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Block A foundation concrete",
+          "model_id": "A102",
+          "progress": 60.0,
+          "date": "2026-10-29",
+          "matched": "A102",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor columns",
+          "model_id": "A103",
+          "progress": 20.0,
+          "date": "2026-10-29",
+          "matched": "A103",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor slab",
+          "model_id": "A104",
+          "progress": 0.0,
+          "date": "2026-10-29",
+          "matched": "A104",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_02_narrative.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 41.2,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "foundation concrete for Block A",
+          "model_id": null,
+          "progress": 65.0,
+          "date": "2026-10-30",
+          "matched": "A102",
+          "status": "suggested",
+          "score": 0.8577,
+          "warnings": []
+        },
+        {
+          "text": "column work on the ground floor",
+          "model_id": null,
+          "progress": 25.0,
+          "date": "2026-10-30",
+          "matched": "A103",
+          "status": "suggested",
+          "score": 0.8487,
+          "warnings": []
+        },
+        {
+          "text": "excavation in Block B",
+          "model_id": null,
+          "progress": 78.0,
+          "date": "2026-10-30",
+          "matched": "A109",
+          "status": "suggested",
+          "score": 0.9418,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_03_table.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 43.6,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Drainage and stormwater lines",
+          "model_id": "A111",
+          "progress": 55.0,
+          "date": "2026-10-31",
+          "matched": "A111",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Site access road",
+          "model_id": "A112",
+          "progress": 40.0,
+          "date": "2026-10-31",
+          "matched": "A112",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Block B excavation",
+          "model_id": "A109",
+          "progress": 80.0,
+          "date": "2026-10-31",
+          "matched": "A109",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_04_no_ids.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 26.7,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Ground-floor slab",
+          "model_id": null,
+          "progress": 5.0,
+          "date": "2026-11-01",
+          "matched": "A104",
+          "status": "suggested",
+          "score": 0.9883,
+          "warnings": []
+        },
+        {
+          "text": "Site access road",
+          "model_id": null,
+          "progress": 45.0,
+          "date": "2026-11-01",
+          "matched": "A112",
+          "status": "suggested",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_05_planned_actual.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 28.8,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Block A foundation concrete",
+          "model_id": null,
+          "progress": 70.0,
+          "date": "2026-11-07",
+          "matched": "A102",
+          "status": "suggested",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor columns",
+          "model_id": null,
+          "progress": 30.0,
+          "date": "2026-11-07",
+          "matched": "A103",
+          "status": "suggested",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_06_issues_only.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 27.9,
+      "error": null,
+      "expected": 1,
+      "predicted": 1,
+      "true_positive": 1,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 1,
+      "date_correct": 1,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Drainage and stormwater lines",
+          "model_id": null,
+          "progress": 60.0,
+          "date": "2026-11-02",
+          "matched": "A111",
+          "status": "suggested",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Block B foundation",
+          "model_id": null,
+          "progress": null,
+          "date": "2026-11-02",
+          "matched": "A110",
+          "status": "suggested",
+          "score": 0.8349,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_07_ocr_noise.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 40.7,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Block A foundation concrete",
+          "model_id": "A102",
+          "progress": 75.0,
+          "date": "2026-11-05",
+          "matched": "A102",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor columns",
+          "model_id": "A103",
+          "progress": 35.0,
+          "date": "2026-11-05",
+          "matched": "A103",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_08_long_multi.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 76.4,
+      "error": null,
+      "expected": 6,
+      "predicted": 6,
+      "true_positive": 6,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 6,
+      "date_correct": 6,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Block A foundation concrete",
+          "model_id": "A102",
+          "progress": 80.0,
+          "date": "2026-11-08",
+          "matched": "A102",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor columns",
+          "model_id": "A103",
+          "progress": 40.0,
+          "date": "2026-11-08",
+          "matched": "A103",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor slab",
+          "model_id": "A104",
+          "progress": 10.0,
+          "date": "2026-11-08",
+          "matched": "A104",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Block B excavation",
+          "model_id": "A109",
+          "progress": 90.0,
+          "date": "2026-11-08",
+          "matched": "A109",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Drainage and stormwater lines",
+          "model_id": "A111",
+          "progress": 65.0,
+          "date": "2026-11-08",
+          "matched": "A111",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Site access road",
+          "model_id": "A112",
+          "progress": 50.0,
+          "date": "2026-11-08",
+          "matched": "A112",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_09_email.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 32.0,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "columns on the ground floor",
+          "model_id": null,
+          "progress": 45.0,
+          "date": "2026-11-09",
+          "matched": "A103",
+          "status": "suggested",
+          "score": 0.9409,
+          "warnings": []
+        },
+        {
+          "text": "GF slab",
+          "model_id": null,
+          "progress": 12.0,
+          "date": "2026-11-09",
+          "matched": "A104",
+          "status": "needs_mapping",
+          "score": 0.557,
+          "warnings": [
+            "Date ignored: unrecognised date '0_11/2026'",
+            "Ambiguous: 'Ground floor slab' and 'First floor slab' score almost the same."
+          ]
+        }
+      ]
+    },
+    {
+      "file": "eval_10_distractors.txt",
+      "kind": "text",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 35.3,
+      "error": null,
+      "expected": 1,
+      "predicted": 1,
+      "true_positive": 1,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 1,
+      "date_correct": 1,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Crane maintenance completed",
+          "model_id": null,
+          "progress": null,
+          "date": "2026-11-10",
+          "matched": "A115",
+          "status": "unmatched",
+          "score": 0.2641,
+          "warnings": [
+            "Ambiguous: 'Finishing works' and 'Block B excavation' score almost the same."
+          ]
+        },
+        {
+          "text": "Block A foundation concrete",
+          "model_id": null,
+          "progress": 85.0,
+          "date": "2026-11-10",
+          "matched": "A102",
+          "status": "suggested",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Safety audit",
+          "model_id": null,
+          "progress": 100.0,
+          "date": "2026-11-10",
+          "matched": "A116",
+          "status": "unmatched",
+          "score": 0.2501,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_11_narrative.pdf",
+      "kind": "pdf",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 42.6,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "foundation concrete for Block A",
+          "model_id": null,
+          "progress": 65.0,
+          "date": "2026-10-30",
+          "matched": "A102",
+          "status": "suggested",
+          "score": 0.8577,
+          "warnings": []
+        },
+        {
+          "text": "column work on the ground floor",
+          "model_id": null,
+          "progress": 25.0,
+          "date": "2026-10-30",
+          "matched": "A103",
+          "status": "suggested",
+          "score": 0.8487,
+          "warnings": []
+        },
+        {
+          "text": "excavation in Block B",
+          "model_id": null,
+          "progress": 78.0,
+          "date": "2026-10-30",
+          "matched": "A109",
+          "status": "suggested",
+          "score": 0.9418,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_12_monthly.pdf",
+      "kind": "pdf",
+      "method": "text",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 71.3,
+      "error": null,
+      "expected": 6,
+      "predicted": 6,
+      "true_positive": 6,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 6,
+      "date_correct": 6,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Block A foundation concrete",
+          "model_id": "A102",
+          "progress": 80.0,
+          "date": "2026-11-08",
+          "matched": "A102",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor columns",
+          "model_id": "A103",
+          "progress": 40.0,
+          "date": "2026-11-08",
+          "matched": "A103",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor slab",
+          "model_id": "A104",
+          "progress": 10.0,
+          "date": "2026-11-08",
+          "matched": "A104",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Block B excavation",
+          "model_id": "A109",
+          "progress": 90.0,
+          "date": "2026-11-08",
+          "matched": "A109",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Drainage and stormwater lines",
+          "model_id": "A111",
+          "progress": 65.0,
+          "date": "2026-11-08",
+          "matched": "A111",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Site access road",
+          "model_id": "A112",
+          "progress": 50.0,
+          "date": "2026-11-08",
+          "matched": "A112",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_13_scan.png",
+      "kind": "image",
+      "method": "ocr",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 48.8,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Block A foundation concrete",
+          "model_id": "A102",
+          "progress": 60.0,
+          "date": "2026-10-29",
+          "matched": "A102",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor columns",
+          "model_id": "A103",
+          "progress": 20.0,
+          "date": "2026-10-29",
+          "matched": "A103",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Ground floor slab",
+          "model_id": "A104",
+          "progress": 0.0,
+          "date": "2026-10-29",
+          "matched": "A104",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_14_phone_photo.jpg",
+      "kind": "image",
+      "method": "ocr",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 49.4,
+      "error": null,
+      "expected": 3,
+      "predicted": 3,
+      "true_positive": 3,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 3,
+      "date_correct": 3,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "Drainage and stormwater lines",
+          "model_id": "A111",
+          "progress": 55.0,
+          "date": "2026-10-31",
+          "matched": "A111",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Site access road",
+          "model_id": "A112",
+          "progress": 40.0,
+          "date": "2026-10-31",
+          "matched": "A112",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        },
+        {
+          "text": "Block B excavation",
+          "model_id": "A109",
+          "progress": 80.0,
+          "date": "2026-10-31",
+          "matched": "A109",
+          "status": "id_match",
+          "score": 1.0,
+          "warnings": []
+        }
+      ]
+    },
+    {
+      "file": "eval_15_email_scan.png",
+      "kind": "image",
+      "method": "ocr",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "seconds": 28.0,
+      "error": null,
+      "expected": 2,
+      "predicted": 2,
+      "true_positive": 2,
+      "false_positive": [],
+      "missed": [],
+      "progress_correct": 2,
+      "date_correct": 2,
+      "wrong_values": {},
+      "entries": [
+        {
+          "text": "columns on the ground floor",
+          "model_id": null,
+          "progress": 45.0,
+          "date": "2026-11-09",
+          "matched": "A103",
+          "status": "suggested",
+          "score": 0.9409,
+          "warnings": []
+        },
+        {
+          "text": "GF slab",
+          "model_id": null,
+          "progress": 12.0,
+          "date": "2026-11-09",
+          "matched": "A104",
+          "status": "needs_mapping",
+          "score": 0.5863,
+          "warnings": [
+            "Ambiguous: 'Ground floor slab' and 'First floor slab' score almost the same."
+          ]
+        }
+      ]
+    }
+  ]
+}

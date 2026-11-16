@@ -1,7 +1,25 @@
+# API and storage
 fastapi==0.115.12
 uvicorn==0.34.2
 sqlalchemy==2.0.40
 psycopg[binary]==3.2.9
 python-multipart==0.0.20
-pytest==8.3.5
+python-dotenv==1.2.4
+PyJWT==2.15.1
 httpx==0.28.1
+# Documents and OCR (PaddleOCR models via ONNX Runtime; no system install needed)
+openpyxl==3.1.5
+pypdf==5.4.0
+pypdfium2==5.15.2
+python-docx==1.2.0
+pillow==13.0.0
+rapidocr==3.10.0
+onnxruntime==1.32.0
+# Matching, dependency analysis, delay prediction
+sentence-transformers==6.3.0
+networkx==3.7
+scikit-learn==1.9.1
+xgboost==3.4.1
+numpy==2.5.5
+# Tests
+pytest==8.3.5

@@ -20,11 +20,19 @@ services:
       dockerfile: backend/Dockerfile
     environment:
       DATABASE_URL: postgresql+psycopg://infrasight:infrasight@db:5432/infrasight
-      CORS_ORIGINS: http://localhost:5173
+      CORS_ORIGINS: http://localhost:5173,http://127.0.0.1:5173
+      # Ollama runs on the host (Windows/macOS Docker Desktop). Inside a container 127.0.0.1 is the container itself.
+      OLLAMA_URL: http://host.docker.internal:11434
+      UPLOAD_DIR: /data/uploads
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "127.0.0.1:8000:8000"
+    volumes:
+      - uploads:/data/uploads
     depends_on:
       db:
         condition: service_healthy
 volumes:
   postgres_data:
+  uploads:

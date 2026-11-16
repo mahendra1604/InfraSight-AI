@@ -1,0 +1,7 @@
+WEEKLY PROGRESS TABLE                      Date: 31/10/2026
+
+| ID   | Activity                       | Planned | Actual | Remarks                      |
+|------|--------------------------------|---------|--------|------------------------------|
+| A111 | Drainage and stormwater lines  | 50%     | 55%    | Ahead, manhole 4 completed   |
+| A112 | Site access road               | 60%     | 40%    | Aggregate supply shortage    |
+| A109 | Block B excavation             | 95%     | 80%    | Rock encountered at grid C   |

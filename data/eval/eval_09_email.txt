@@ -1,0 +1,6 @@
+From: site.engineer@example.com
+Subject: quick update
+
+Hi team, quick update for 09/11/2026 - columns on the ground floor are at 45% and the GF slab has reached 12%.
+The slab is moving slowly because the column cycle is still behind.
+Regards, Site Engineer

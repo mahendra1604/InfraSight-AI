@@ -1,17 +1,4 @@
-import importlib
-
 import pytest
-from fastapi.testclient import TestClient
-
-
-@pytest.fixture
-def client(tmp_path, monkeypatch):
-    monkeypatch.setenv("DATABASE_URL", f"sqlite:///{(tmp_path / 'test.db').as_posix()}")
-    import app.main as module
-    module = importlib.reload(module)
-    with TestClient(module.app) as test_client:
-        yield test_client
-    module.engine.dispose()
 
 
 def test_review_updates_progress_and_audit_once(client):
