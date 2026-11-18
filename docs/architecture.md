@@ -1,7 +1,8 @@
 # Architecture
 
 ```
-Browser (React + Vite, frontend/src)
+Browser (React + Vite, frontend/src): design.css tokens (dark/light), Motion animations,
+   React Three Fiber: BackgroundWorld (one canvas behind all screens) + lazy-loaded in-page 3D views
    │  /api (Vite dev proxy → 127.0.0.1:8000), JWT bearer token
    ▼
 FastAPI (backend/app/main.py)
@@ -13,6 +14,7 @@ FastAPI (backend/app/main.py)
    │    └─ matching.py    activity ID → Sentence-Transformers cosine → top-3 + validation decision
    ├─ analysis.py     NetworkX dependency graph, CPM (float, critical path), downstream impact
    ├─ prediction.py   XGBoost delay classifier + regressor, risk score, per-prediction factors
+   ├─ site_model.py   3D "digital twin lite": plan elements + linked activities, progress and risk
    ├─ exporting.py    Excel project report, CSV feeds
    └─ db.py           SQLAlchemy models, forward-only column migration, Power BI views, seed data
    ▼

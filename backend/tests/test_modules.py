@@ -68,6 +68,9 @@ def test_float_absorbs_delay_off_the_critical_path(client):
     client.post("/api/schedules/import", files={"file": ("s.csv", EXTENDED, "text/csv")})
     nodes = {n["id"]: n for n in client.get("/api/analysis/dependencies").json()["nodes"]}
     assert nodes["A107"]["total_float_days"] > 0 and not nodes["A107"]["critical"]
+    # depth = longest chain of predecessors (graph column), not the number of ancestors
+    assert (nodes["A100"]["depth"], nodes["A107"]["depth"], nodes["A108"]["depth"]) == (0, 1, 6)
+    assert nodes["A108"]["ancestors"] == 7
     impact = client.get(f"/api/analysis/impact/A107?delay_days={nodes['A107']['total_float_days']}").json()
     assert impact["project_delay_days"] == 0
 

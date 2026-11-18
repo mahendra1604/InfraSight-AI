@@ -43,7 +43,8 @@ Missing values are `null`, never invented. Percentages outside 0–100 and unrea
 - `GET /schedules/versions`
 
 ## Analysis, prediction, export
-- `GET /analysis/dependencies` — nodes with ES/EF/LS/LF, total float, critical flag, downstream list; `critical_path`, `bottlenecks`
+- `GET /analysis/dependencies` — nodes with ES/EF/LS/LF, total float, critical flag, downstream list, `depth` (longest predecessor chain = graph column), `ancestors`; `critical_path`, `bottlenecks`
+- `GET /site-model?plan_job=` — 3D model: `plot {length, width}`, `elements[] {id, name, kind (plot|building|road|drain|parking|…), length, width, floors, height, position [x,z] m, path [[x,z]…], quantity, activities[], progress, planned, status (complete|on_plan|behind|unlinked), risk_level}`, `source {type: site_plan|schematic}`, `unlinked_activities[]`. Built from the latest site-plan analysis (label positions and "G+n" floors from OCR) or schematically from activity names; activities are linked by name and top-level WBS group.
 - `GET /analysis/impact/{activity_id}?delay_days=N` — affected successors and project delay
 - `GET /predictions` — per activity `delay_probability`, `expected_delay_days`, `risk_score`, `risk_level`, `factors[]`, plus model version and hold-out metrics · `POST /predictions/train` (admin)
 - `GET /export/report.xlsx` · `GET /export/{activities|reports|predictions|audit|jobs}.csv`

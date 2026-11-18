@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'motion/react';
+import { ScanEffect, staggerChild, staggerParent } from '../motion';
 import { AlertTriangle, CheckCircle2, ChevronRight, FileSearch, Loader2, RefreshCw, Upload, XCircle } from 'lucide-react';
 import { can, postForm, request } from '../api';
 
@@ -88,18 +90,19 @@ export function JobTracker({ jobId, onFinished, onReview }) {
       {job.instruction && <span title={job.instruction}>Question asked</span>}
     </div>
     {job.status === 'queued' && <p className="muted">Waiting for the model. Jobs run one at a time on this computer.</p>}
-    {job.status === 'running' && <p className="muted">CPU-only inference: text reports usually take 20–90 s, images 1–4 min. You can leave this page; the analysis continues.</p>}
+    {job.status === 'running' && <div className="running-row"><ScanEffect label={job.stage}/>
+      <p className="muted">CPU-only inference: text reports usually take 20–90 s, images 1–4 min. You can leave this page; the analysis continues.</p></div>}
     {job.status === 'failed' && <div className="error" role="alert"><XCircle size={16}/> {job.error}</div>}
     {job.status === 'done' && <>
       {extraction.answer && <div className="model-answer"><span className="eyebrow">MODEL RESPONSE</span><p>{extraction.answer}</p></div>}
       <h3 className="sub">Created for review ({result.created_reports?.length || 0})</h3>
-      {result.created_reports?.length ? <div className="analysis-entries">
-        {result.created_reports.map((r) => <div className="analysis-entry" key={r.report_id}>
+      {result.created_reports?.length ? <motion.div className="analysis-entries" variants={staggerParent} initial="hidden" animate="show">
+        {result.created_reports.map((r) => <motion.div className="analysis-entry" key={r.report_id} variants={staggerChild}>
           <strong>{r.activity_id} · {r.activity_name}</strong>
           <span>{r.progress}%{r.quantity ? ` (${r.quantity})` : ''} · {r.reporting_date}</span>
           <small>Report says “{r.activity_text}” <MatchPill status={r.match_status} score={r.score}/>{r.needs_review ? ' · check carefully' : ''}</small>
-        </div>)}
-      </div> : <p className="muted">No new progress values were found.</p>}
+        </motion.div>)}
+      </motion.div> : <p className="muted">No new progress values were found.</p>}
       {result.skipped?.length > 0 && <>
         <h3 className="sub">Not turned into reports ({result.skipped.length})</h3>
         <div className="skipped">{result.skipped.map((s, i) => <div key={i}><strong>{s.activity_text || s.activity_id || 'Item'}</strong>{s.progress != null ? ` · ${s.progress}%` : ''} — {s.reason}</div>)}</div>

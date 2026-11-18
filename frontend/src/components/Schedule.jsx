@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { CalendarRange, Upload } from 'lucide-react';
 import { can, fmtDate, postForm, request } from '../api';
 
-export function SchedulePage({ user, onChanged }) {
+const Gantt3D = lazy(() => import('./three/Gantt3D'));
+
+export function SchedulePage({ user, onChanged, paused = false }) {
   const [file, setFile] = useState(null);
   const [validation, setValidation] = useState(null);
   const [result, setResult] = useState(null);
@@ -19,7 +21,14 @@ export function SchedulePage({ user, onChanged }) {
     try { setter(await postForm(path, { file, keep_missing: keep ? 'true' : 'false' })); } catch (e) { setError(e.message); setValidation(null); } finally { setBusy(false); }
   }
 
-  return <div className="review-grid">
+  return <>
+  <section className="panel">
+    <div className="panel-3d-head"><div><span className="eyebrow">TIMELINE · 3D GANTT</span><h2>The baseline in 3D</h2></div>
+      <span className="legend"><i style={{ background: '#ffb547' }}/>Critical / behind <i style={{ background: '#34d399' }}/>On plan <i style={{ background: '#4f8cff' }}/>Complete <i style={{ background: '#3be0ff' }}/>Today</span></div>
+    <Suspense fallback={<div className="scene-loading">Loading 3D…</div>}><Gantt3D key={versions.length} paused={paused}/></Suspense>
+    <p className="footnote">Bars run from planned start to finish; the solid part is actual progress. Orange outlines are critical-path activities. Drag to orbit.</p>
+  </section>
+  <div className="review-grid">
     <section className="panel">
       <span className="eyebrow">SCHEDULE MANAGEMENT</span>
       <h2>Import a project schedule</h2>
@@ -45,5 +54,6 @@ export function SchedulePage({ user, onChanged }) {
         <p>{v.activities} activities ({v.added} added, {v.updated} updated, {v.removed} removed) · {v.imported_by} · {fmtDate(v.imported_at)}</p></div></div>)
         : <p className="muted">The seeded demo baseline is in use. Imports appear here.</p>}
     </section>
-  </div>;
+  </div>
+  </>;
 }

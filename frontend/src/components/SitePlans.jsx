@@ -1,7 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { AlertTriangle, Check, CheckCircle2, Download, Loader2, Map as MapIcon, RefreshCw, Ruler, XCircle } from 'lucide-react';
 import { can, download, post, postForm, request } from '../api';
 import { elapsed } from './Analyse';
+
+const SiteModelPanel = lazy(() => import('./three/SiteModelPanel'));
 
 const PLAN_TYPES = '.png,.jpg,.jpeg,.webp,.tif,.tiff,.bmp,.pdf';
 const MODES = [
@@ -77,6 +79,10 @@ function PlanResult({ job, activities, user, onApplied }) {
       {r.plan.drawing_date && <span>{r.plan.drawing_date}</span>}
       <span>{r.plan.elements.length} labels read</span>
     </div>
+    <h3 className="sub">Plan → 3D</h3>
+    <Suspense fallback={<div className="scene-loading">Extruding the plan into 3D…</div>}>
+      <SiteModelPanel planJob={job.id} refreshKey={job.id} height={360}/>
+    </Suspense>
     <h3 className="sub">Quantity take-off ({totals.length})</h3>
     <p className="footnote">{r.takeoff.method} Rows with a coloured edge need checking. Applying a quantity lets engineers report progress in {totals[0]?.unit || 'units'} instead of %.</p>
     {totals.length ? <div className="table-scroll"><table className="takeoff"><thead><tr><th>Element</th><th>Category</th><th>Total</th><th>Schedule activity</th><th/></tr></thead>

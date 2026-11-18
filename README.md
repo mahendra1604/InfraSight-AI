@@ -49,6 +49,7 @@ The first start migrates an existing `backend/infrasight.db` in place (new colum
 6. **Schedule** → validate and import `data/samples/schedule_extended.csv` (17 activities, multiple predecessors, quantities).
 7. **Site plans** → upload `data/samples/site_plan.png` → the model reads the printed dimensions; code builds the quantity take-off (drains 450 m, road 300 m, Block A 600 m² …). Apply a quantity to an activity, download the draft schedule, and import it with *Keep existing activities* ticked.
 8. **Report by quantity** → in *Report review → Add a manual report* choose *By quantity* (e.g. 252 m³ of 420 m³ → 60 %), or upload a diary saying "laid 45 m of drain today": the system converts it to cumulative progress.
+9. **3D views** → the Overview shows the site in 3D: buildings rise floor by floor to their approved progress, roads and drains fill along their length, high-risk elements pulse red; click an element for its activities. On **Dependencies**, the 3D graph glows along the critical path; *Simulate* spreads a delay through it in red. Share a what-if with a link such as `#/dependencies?simulate=A102&days=10`. The header's **Motion on/off** switch turns all animation off (it also follows the Windows "reduce animations" setting), and 3D pauses automatically while an AI job is running.
 
 ## What is implemented (report modules)
 
@@ -64,10 +65,18 @@ The first start migrates an existing `backend/infrasight.db` in place (new colum
 | Site plans (drawings) | Vision + OCR reads printed dimensions; code computes the quantity take-off; apply quantities to activities; draft schedule CSV | ✅ |
 | Dependency analysis | NetworkX DAG, CPM (ES/EF/LS/LF, float), critical path, bottlenecks, downstream impact simulation | ✅ (FS links) |
 | Delay prediction / Risk | XGBoost classifier + regressor, per-prediction factors, risk score | ✅ (synthetic training data) |
-| Dashboard | React app (8 screens) · Power BI via `v_activity_progress`, `v_report_pipeline`, `v_risk` views and CSV exports | ✅ / Power BI file to build |
+| Dashboard | React app (9 screens), one design system (dark/light), shared 3D background world, fully animated (Motion) · **3D site model** ("digital twin lite") and **3D dependency graph** (React Three Fiber) · Power BI via `v_activity_progress`, `v_report_pipeline`, `v_risk` views and CSV exports | ✅ / Power BI file to build |
 | Audit trail | Reviewer, time, model, match method/score, corrections, notes | ✅ |
 | Big data | Spark SQL batch KPI job with throughput test (`pipelines/`) | ✅ (local mode) |
 | Report generation | Excel project report (summary, activities, risk, reports, audit) | ✅ |
+
+## Look and feel
+
+- **One design system** (`frontend/src/design.css`): dark *Blueprint Command Center* by default, plus a light theme. Switch with the **Dark/Light** button in the header (or open the app with `?theme=light`).
+- **One 3D world behind every screen**: the camera moves per screen (aerial on Overview, top-down blueprint on Site plans, along a time tunnel on Schedule, above a network on Dependencies, red-tinted on Delay risk, a scanning beam on Analyse reports). Hovering a report in *Report review* lights up its building.
+- **In-page 3D**: digital twin (Overview, Site plans "Plan → 3D"), progress skyline (Activities), 3D dependency graph and what-if (Dependencies), risk landscape (Delay risk), 3D Gantt (Schedule).
+- **Present** button: hides the panels for an automatic camera tour of the project, or free camera; Esc to exit. Good for the examiners' demo.
+- **Motion on/off** turns every animation off (also follows the Windows "reduce animations" setting). The background renders at 30 fps and lower resolution, and all 3D pauses while an AI job is running.
 
 ## Measured results
 
@@ -83,7 +92,7 @@ All measured on a CPU-only laptop (Ryzen 5 5600H, 16 GB RAM):
 
 ```powershell
 cd backend
-..\.venv\Scripts\python.exe -m pytest            # 108 unit + API tests (LLM mocked), ~40 s
+..\.venv\Scripts\python.exe -m pytest            # 112 unit + API tests (LLM mocked), ~40 s
 ..\.venv\Scripts\python.exe -m pytest -m live    # 3 tests with the real Ollama models, ~8 min
 cd ..\frontend
 npm.cmd run build
@@ -101,6 +110,8 @@ Evaluation and training: see `ml/README.md`. Spark: see `pipelines/README.md`.
 | Empty answer / "only hidden reasoning" | A thinking model is configured. Use the `-instruct` tags above (`qwen3-vl:8b` is a thinking model). |
 | "output was cut off" | Very long page: split the document or raise `OLLAMA_NUM_PREDICT`. |
 | pytest `PermissionError` on Temp | Already handled by `backend/pytest.ini` (`--basetemp=.pytest-tmp`). |
+| 3D view is slow or blank | Turn **Motion off** in the header (static 3D), update the graphics driver, or use the 2D graph button. 3D needs WebGL (any modern browser). |
+| Backend on another port | `$env:API_URL = 'http://127.0.0.1:8010'; npm.cmd run dev -- --port 5180` |
 
 ## Docker (optional)
 

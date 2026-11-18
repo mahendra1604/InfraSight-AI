@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { AlertTriangle, Bot, Check, X } from 'lucide-react';
 import { can, post, request } from '../api';
+import { useUi } from '../ui';
 import { MatchPill } from './Analyse';
 
 function ReportCard({ report, activities, user, busy, run }) {
+  const { setFocus } = useUi();
   const [activityId, setActivityId] = useState(report.activity_id);
   const [progress, setProgress] = useState(report.progress);
   const [note, setNote] = useState('');
@@ -21,7 +24,10 @@ function ReportCard({ report, activities, user, busy, run }) {
     run(() => request(`/reports/${report.id}/review`, post(body)), action === 'approve' ? 'Progress approved and recorded in the audit trail.' : 'Report rejected.');
   }
 
-  return <article className={`report ${report.needs_review ? 'flagged' : ''}`}>
+  return <motion.article layout className={`report ${report.needs_review ? 'flagged' : ''}`} initial={{ opacity: 0, y: 14 }}
+    animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: 180, y: -120, scale: 0.4, rotate: 8, transition: { duration: 0.55, ease: [0.4, 0, 0.2, 1] } }}
+    transition={{ duration: 0.35 }} onMouseEnter={() => setFocus([report.activity_id])} onMouseLeave={() => setFocus(null)}
+    whileHover={{ y: -2 }} title="Hovering highlights this activity's building in the 3D world">
     <div className="section-title">
       <span className="activity-id">REPORT {report.id} · {report.reporting_date}{report.evidence_page ? ` · page ${report.evidence_page}` : ''}</span>
       <span className="report-pills">{ai && <span className="pill"><Bot size={11}/> AI</span>}<MatchPill status={report.match_status} score={report.match_score}/><span className="pill">{report.status}</span></span>
@@ -52,7 +58,7 @@ function ReportCard({ report, activities, user, busy, run }) {
       </div>
     </div>}
     {pending && !can(user, 'manager') && <p className="footnote">A project manager must approve this report.</p>}
-  </article>;
+  </motion.article>;
 }
 
 function ManualReportForm({ data, busy, run }) {
@@ -97,7 +103,10 @@ export function ReviewPage({ data, user, busy, run }) {
         <div className="segmented">{['pending', 'approved', 'rejected', 'all'].map((f) => <button key={f} className={filter === f ? 'active' : ''} onClick={() => setFilter(f)}>{f} ({f === 'all' ? data.reports.length : data.reports.filter((r) => r.status === f).length})</button>)}</div>
       </div>
       <p className="muted">AI suggestions show the model, how the activity was matched and the similarity score. Correct the activity or progress before approving when needed; every decision is audited.</p>
-      {shown.length ? shown.map((r) => <ReportCard key={r.id} report={r} activities={data.activities} user={user} busy={busy} run={run}/>) : <p className="muted">No {filter} reports.</p>}
+      <AnimatePresence mode="popLayout" initial={false}>
+        {shown.map((r) => <ReportCard key={r.id} report={r} activities={data.activities} user={user} busy={busy} run={run}/>)}
+      </AnimatePresence>
+      {!shown.length && <p className="muted">No {filter} reports.</p>}
     </section>
     <section className="panel">
       <h2>Add a manual report</h2>

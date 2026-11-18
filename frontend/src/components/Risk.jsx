@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { Download, RefreshCw, TrendingUp } from 'lucide-react';
+import { motion } from 'motion/react';
 import { can, download, request } from '../api';
+import { GrowBar, staggerChild, staggerParent } from '../motion';
+import { TiltCard } from '../ui';
 
-export function RiskPage({ user }) {
+const RiskBars3D = lazy(() => import('./three/RiskBars3D'));
+
+export function RiskPage({ user, paused = false }) {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -21,12 +26,18 @@ export function RiskPage({ user }) {
   const high = data.predictions.filter((p) => p.risk_level === 'high').length;
   return <>
     {error && <div className="error" role="alert">{error}</div>}
-    <section className="stats">
+    <motion.section className="stats" variants={staggerParent} initial="hidden" animate="show">
       {[['High-risk activities', high, 'Risk score ≥ 50'],
         ['Expected slip (max)', `${Math.max(0, ...data.predictions.map((p) => p.expected_delay_days))} d`, 'Largest predicted finish delay'],
         ['Model ROC-AUC', m.roc_auc, `Hold-out, ${m.test_rows} synthetic rows`],
         ['Delay-days MAE', `${m.delay_days_mae} d`, 'Regression error on hold-out']].map(([label, value, caption], i) =>
-        <article key={label}><div>{label}<TrendingUp size={16}/></div><strong className={i === 0 && high ? 'amber' : ''}>{value}</strong><small>{caption}</small></article>)}
+        <TiltCard key={label} variants={staggerChild}><div>{label}<TrendingUp size={16}/></div><strong className={i === 0 && high ? 'amber' : ''}>{value}</strong><small>{caption}</small></TiltCard>)}
+    </motion.section>
+    <section className="panel">
+      <div className="panel-3d-head"><div><span className="eyebrow">RISK LANDSCAPE · 3D</span><h2>Where the delays will hurt</h2></div>
+        <span className="legend"><i style={{ background: '#ff5d5d' }}/>High <i style={{ background: '#ffb547' }}/>Medium <i style={{ background: '#34d399' }}/>Low <i style={{ background: '#4f8cff' }}/>Complete</span></div>
+      <Suspense fallback={<div className="scene-loading">Loading 3D…</div>}><RiskBars3D predictions={data.predictions} paused={paused}/></Suspense>
+      <p className="footnote">Pillar height = risk score (delay probability weighted by downstream impact). Hover a pillar for the main factors.</p>
     </section>
     <section className="panel">
       <div className="section-title">
@@ -38,14 +49,14 @@ export function RiskPage({ user }) {
         </div>
       </div>
       <div className="table-scroll"><table><thead><tr><th>Activity</th><th>P(delay)</th><th>Expected delay</th><th>Risk</th><th>Downstream</th><th>Main factors</th></tr></thead>
-        <tbody>{data.predictions.map((p) => <tr key={p.activity_id}>
+        <motion.tbody variants={staggerParent} initial="hidden" animate="show">{data.predictions.map((p, i) => <motion.tr key={p.activity_id} variants={staggerChild}>
           <td><small className="activity-id">{p.activity_id}</small>{p.name}{p.critical && <small className="crit"> · critical</small>}</td>
-          <td><div className="prob"><div style={{ width: `${p.delay_probability * 100}%` }} className={p.delay_probability >= 0.5 ? 'hot' : ''}/></div>{p.complete ? 'complete' : `${Math.round(p.delay_probability * 100)}%`}</td>
+          <td><div className="prob"><GrowBar value={p.delay_probability * 100} delay={0.2 + i * 0.05} className={p.delay_probability >= 0.5 ? 'hot' : ''}/></div>{p.complete ? 'complete' : `${Math.round(p.delay_probability * 100)}%`}</td>
           <td>{p.complete ? '—' : `${p.expected_delay_days} d`}</td>
           <td><span className={`pill risk-${p.risk_level} ${p.risk_level !== 'low' ? 'warning' : ''}`}>{p.risk_level} · {p.risk_score}</span></td>
           <td>{p.downstream_count}</td>
           <td className="factors">{p.factors.length ? p.factors.map((f) => <span key={f.feature}>{f.label} ({f.value})</span>) : '—'}</td>
-        </tr>)}</tbody></table></div>
+        </motion.tr>)}</motion.tbody></table></div>
       <p className="footnote">{data.note} {data.risk_formula}. Model {data.model.version}; accuracy {m.accuracy}, F1 {m.f1}. Features: {data.model.features.join(', ')}.</p>
     </section>
   </>;

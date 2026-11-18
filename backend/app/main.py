@@ -20,7 +20,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, model_validator
 from sqlalchemy import select
 
-from app import analysis, db, documents, exporting, pipeline, prediction, quantities, schedules
+from app import analysis, db, documents, exporting, pipeline, prediction, quantities, schedules, site_model
 from app.auth import CurrentUser, authenticate, create_token, current_user, require
 from app.config import settings
 from app.db import Activity, AnalysisJob, Audit, BaselineVersion, Prediction, Report, utcnow
@@ -517,6 +517,23 @@ def compute_predictions() -> dict:
 @app.get("/api/predictions", dependencies=[viewer])
 def predictions():
     return compute_predictions()
+
+
+@app.get("/api/site-model", dependencies=[viewer])
+def get_site_model(plan_job: Optional[int] = Query(default=None, description="Site-plan analysis to use (default: latest)")):
+    """3D site model: plan elements with linked activities, approved progress and delay risk."""
+    acts = _activities()
+    try:
+        risk = {p["activity_id"]: p for p in compute_predictions()["predictions"]}
+    except HTTPException:
+        risk = {}
+    with db.session() as s:
+        query = select(AnalysisJob).where(AnalysisJob.purpose == "plan", AnalysisJob.status == "done")
+        query = query.where(AnalysisJob.id == plan_job) if plan_job else query.order_by(AnalysisJob.id.desc()).limit(1)
+        job = s.scalar(query)
+        plan = json.loads(job.result_json) if job and job.result_json else None
+        label = f"{job.filename} (analysis #{job.id})" if job else None
+    return site_model.build_site_model(acts, risk, plan, label)
 
 
 @app.post("/api/predictions/train", dependencies=[Depends(require("admin"))])

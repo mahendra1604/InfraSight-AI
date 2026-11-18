@@ -1,6 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useMemo, useState } from 'react';
+import { motion } from 'motion/react';
 import { GitBranch, Zap } from 'lucide-react';
 import { fmtDate, request } from '../api';
+import { AnimatedNumber, FadeIn, staggerChild, staggerParent, useMotionSetting } from '../motion';
+import { TiltCard } from '../ui';
+
+const DependencyGraph3D = lazy(() => import('./three/DependencyGraph3D'));
 
 const NODE_W = 168;
 const NODE_H = 58;
@@ -47,7 +52,9 @@ function Graph({ data, highlight }) {
   </div>;
 }
 
-export function DependenciesPage() {
+export function DependenciesPage({ paused = false }) {
+  const { reduced } = useMotionSetting();
+  const [view, setView] = useState('3d');
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [selected, setSelected] = useState('');
@@ -59,11 +66,24 @@ export function DependenciesPage() {
       setData(d);
       const firstBehind = d.nodes?.find((n) => n.variance < 0 && n.actual < 100);
       setSelected(firstBehind?.id || d.nodes?.[0]?.id || '');
+      // Shareable what-if link: #/dependencies?simulate=A103&days=7
+      const params = new URLSearchParams(window.location.hash.split('?')[1] || '');
+      const target = params.get('simulate');
+      if (target && d.nodes?.some((n) => n.id === target)) {
+        const delay = Number(params.get('days')) || 5;
+        setSelected(target);
+        setDays(delay);
+        simulate(target, delay);
+      }
     }).catch((e) => setError(e.message));
   }, []);
 
-  async function simulate() {
-    try { setImpact(await request(`/analysis/impact/${encodeURIComponent(selected)}?delay_days=${days}`)); setError(''); } catch (e) { setError(e.message); }
+  async function simulate(id = selected, delay = days) {
+    try {
+      setImpact(await request(`/analysis/impact/${encodeURIComponent(id)}?delay_days=${delay}`));
+      setError('');
+      window.history.replaceState(null, '', `#/dependencies?simulate=${encodeURIComponent(id)}&days=${delay}`);
+    } catch (e) { setError(e.message); }
   }
 
   if (error && !data) return <div className="error">{error}</div>;
@@ -71,18 +91,30 @@ export function DependenciesPage() {
   if (!data.valid) return <div className="error">{data.message}</div>;
   if (!data.nodes.length) return <div className="panel">The schedule has no activities yet. Import one on the Schedule screen.</div>;
   return <>
-    <section className="stats">
-      {[['Project duration', `${data.project_duration_days} d`, `${fmtDate(data.project_start)} → ${fmtDate(data.project_finish)}`],
-        ['Critical activities', data.critical_path.length, 'Zero total float'],
-        ['Dependencies', data.edges.length, 'Finish-to-start links'],
-        ['Bottlenecks', data.bottlenecks.length, 'Unfinished, with many successors']].map(([label, value, caption]) =>
-        <article key={label}><div>{label}<GitBranch size={16}/></div><strong>{value}</strong><small>{caption}</small></article>)}
-    </section>
-    <section className="panel">
-      <div className="section-title"><h2>Dependency graph</h2><span className="legend"><i className="lg-critical"/>Critical <i className="lg-behind"/>Behind plan <i className="lg-done"/>Complete</span></div>
-      <Graph data={data} highlight={impact}/>
+    <motion.section className="stats" variants={staggerParent} initial="hidden" animate="show">
+      {[['Project duration', data.project_duration_days, ' d', `${fmtDate(data.project_start)} → ${fmtDate(data.project_finish)}`],
+        ['Critical activities', data.critical_path.length, '', 'Zero total float'],
+        ['Dependencies', data.edges.length, '', 'Finish-to-start links'],
+        ['Bottlenecks', data.bottlenecks.length, '', 'Unfinished, with many successors']].map(([label, value, suffix, caption]) =>
+        <TiltCard key={label} variants={staggerChild}><div>{label}<GitBranch size={16}/></div>
+          <strong><AnimatedNumber value={value} suffix={suffix}/></strong><small>{caption}</small></TiltCard>)}
+    </motion.section>
+    <FadeIn as="section" className="panel" delay={0.1}>
+      <div className="section-title"><h2>Dependency graph</h2>
+        <div className="graph-toolbar">
+          <span className="legend"><i className="lg-critical"/>Critical <i className="lg-behind"/>Behind plan <i className="lg-done"/>Complete</span>
+          <div className="segmented">{['3d', '2d'].map((v) => <button key={v} className={view === v ? 'active' : ''} onClick={() => setView(v)}>{v.toUpperCase()}</button>)}</div>
+        </div>
+      </div>
+      {view === '3d'
+        ? <Suspense fallback={<div className="scene-loading">Loading 3D graph…</div>}>
+            <DependencyGraph3D data={data} impact={impact} selected={selected} paused={paused} reduced={reduced}
+              onSelect={(id) => { if (id) { setSelected(id); setImpact(null); } }}/>
+            <p className="footnote">Drag to orbit, scroll to zoom, click an activity to select it for the simulation. Orange links are the critical path; a simulated slip spreads in red.</p>
+          </Suspense>
+        : <Graph data={data} highlight={impact}/>}
       <p className="footnote">{data.method}</p>
-    </section>
+    </FadeIn>
     <div className="overview-grid">
       <section className="panel">
         <h2>Critical path & float</h2>
@@ -100,12 +132,14 @@ export function DependenciesPage() {
             {data.nodes.filter((n) => n.actual < 100).map((n) => <option key={n.id} value={n.id}>{n.id} · {n.name}</option>)}
           </select></label>
           <label>Delay (days)<input type="number" min="0" max="365" value={days} onChange={(e) => setDays(e.target.value)}/></label>
-          <button className="primary" onClick={simulate}><Zap size={15}/> Simulate</button>
+          <button className="primary" onClick={() => simulate()}><Zap size={15}/> Simulate</button>
         </div>
-        {impact && <div className="impact-result">
+        {impact && <motion.div className="impact-result" key={`${impact.activity_id}-${impact.delay_days}`} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <p><strong>{impact.explanation}</strong></p>
-          {impact.affected.length ? <ul>{impact.affected.map((a) => <li key={a.id}><span className="node-id">{a.id}</span> {a.name} <b>+{a.shift_days} d</b></li>)}</ul> : <p className="muted">No successor moves: the delay is absorbed by float.</p>}
-        </div>}
+          {impact.affected.length ? <ul>{impact.affected.map((a, i) => <motion.li key={a.id} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: reduced ? 0 : (i + 1) * 0.45 }}><span className="node-id">{a.id}</span> {a.name} <b>+{a.shift_days} d</b></motion.li>)}</ul>
+            : <p className="muted">No successor moves: the delay is absorbed by float.</p>}
+        </motion.div>}
         <h3 className="sub">Bottlenecks</h3>
         {data.bottlenecks.length ? <ul className="bottlenecks">{data.bottlenecks.map((b) => <li key={b.id}><span className="node-id">{b.id}</span>{b.name}<small>{b.downstream_count} downstream{b.critical ? ' · critical' : ''}{b.variance < 0 ? ` · ${b.variance} pp` : ''}</small></li>)}</ul> : <p className="muted">None.</p>}
       </section>

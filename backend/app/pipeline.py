@@ -13,7 +13,7 @@ from typing import Any, Callable
 
 from sqlalchemy import select
 
-from app import db, quantities, qwen_service
+from app import db, quantities, qwen_service, site_model
 from app.config import settings
 from app.db import Activity, AnalysisJob, Report, utcnow
 from app.documents import Document, UnsupportedDocument, chunk_text_pages, load_document, load_plan_pages
@@ -314,6 +314,7 @@ async def analyse_plan(filename: str, content_type: str | None, data: bytes, mod
             reading = await qwen_service.extract_plan(page.image, page.text, instruction)
         reading["elements"], double_count_notes = quantities.resolve_double_counting(reading["elements"], page.text)
         reading.setdefault("warnings", []).extend(double_count_notes)
+        site_model.locate_elements(reading["elements"], page.text)   # sheet positions + floors for the 3D model
         for element in reading["elements"]:
             element["sheet"] = page.number
         readings.append(reading)

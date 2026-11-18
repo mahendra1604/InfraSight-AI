@@ -63,6 +63,9 @@ def dependency_analysis(activities: Iterable[Any]) -> dict[str, Any]:
     def as_date(offset: float) -> str | None:
         return (start + timedelta(days=round(offset))).isoformat() if start else None
 
+    level: dict[str, int] = {}
+    for node in nx.topological_sort(graph):  # longest chain of predecessors = column in the graph
+        level[node] = max((level[p] + 1 for p in graph.predecessors(node)), default=0)
     nodes = []
     for node in nx.topological_sort(graph):
         attrs = graph.nodes[node]
@@ -77,7 +80,7 @@ def dependency_analysis(activities: Iterable[Any]) -> dict[str, Any]:
             "late_start": as_date(cpm[node]["ls"]), "late_finish": as_date(cpm[node]["lf"]),
             "total_float_days": cpm[node]["float"], "critical": node in critical,
             "slip_estimate_days": round(behind_days, 1), "betweenness": round(betweenness.get(node, 0.0), 3),
-            "depth": len(nx.ancestors(graph, node)),
+            "depth": level[node], "ancestors": len(nx.ancestors(graph, node)),
         })
     bottlenecks = sorted(
         (n for n in nodes if n["actual"] < 100 and (n["downstream_count"] or n["critical"])),

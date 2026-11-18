@@ -60,7 +60,7 @@ v1 failures came from two causes: (1) when a report had **no** activity codes, t
 ### Other measured results
 - **Spark SQL job:** 2,000,004 report rows aggregated in 15.9 s (≈ 126 k rows/s), local mode, existing Spark 3.5.0 + Java 8.
 - **Delay model (XGBoost, synthetic hold-out of 1,200 rows):** ROC-AUC 0.946, accuracy 0.869, F1 0.88, delay-days MAE 3.23.
-- **Tests:** 108 unit/API tests pass. 3 live tests run against the real models with `pytest -m live` (text report, rendered report image, site plan).
+- **Tests:** 112 unit/API tests pass. 3 live tests run against the real models with `pytest -m live` (text report, rendered report image, site plan).
 
 ### Site plans and quantity-based progress (added 16 Nov 2026)
 
